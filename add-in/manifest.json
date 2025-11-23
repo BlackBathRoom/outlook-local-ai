@@ -27,7 +27,8 @@
     },
     "accentColor": "#230201",
     "validDomains": [
-        "contoso.com"
+        "contoso.com",
+        "localhost:3000"
     ],
     "authorization": {
         "permissions": {
@@ -96,7 +97,7 @@
             "ribbons": [
                 {
                     "contexts": [
-                        "mailCompose"
+                        "mailRead"
                     ],
                     "tabs": [
                         {
