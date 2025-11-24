@@ -10,6 +10,8 @@ if TYPE_CHECKING:
 
 # Log Config
 
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+
 LOG_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
