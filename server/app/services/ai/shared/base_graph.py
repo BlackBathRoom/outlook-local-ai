@@ -26,6 +26,7 @@ class BaseState[R: GraphReturn](TypedDict):
     Args:
         result (NotRequired[R]): エージェントの状態遷移グラフの結果.
     """
+
     result: NotRequired[R]
 
 

@@ -52,13 +52,7 @@ class RAGAgent(BaseGraph[RAGAgentState, Return]):
         manager = VectorStore()
         query = state["user_input"]
         results = manager.similarity_search(query, top_k=TOP_K)
-        return {
-            "mails": [
-                res.mail
-                for res in results
-                if res.score > MESSAGE_THRESHOLD
-            ]
-        }
+        return {"mails": [res.mail for res in results if res.score > MESSAGE_THRESHOLD]}
 
     def _gen_docs_prompt(self, messages: list[VectorMail]) -> str:
         prompt = "## 文書\n"
@@ -87,14 +81,14 @@ class RAGAgent(BaseGraph[RAGAgentState, Return]):
 
         return {
             "result": Return(
-                response=resp.content,
-                mail_ids=[mail.message_id for mail in mails if mail.message_id is not None]
+                response=resp.content, mail_ids=[mail.message_id for mail in mails if mail.message_id is not None]
             )
         }
 
 
 if __name__ == "__main__":
     import time
+
     app_resource.load_models()
 
     store = VectorStore()
