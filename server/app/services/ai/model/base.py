@@ -10,8 +10,10 @@ if TYPE_CHECKING:
 
 
 class Model[TModel](ABC):
-    _instance: Self | None = None
-    _lock: Lock = Lock()
+    def __init_subclass__(cls) -> None:
+        super().__init_subclass__()
+        cls._instance = None
+        cls._lock = Lock()
 
     model: TModel | None = None
 
