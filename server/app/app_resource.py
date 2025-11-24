@@ -9,9 +9,10 @@ from app.services.ai.model import ChatModel, EmbeddingModel
 class AppResource:
     _instance: Self | None = None
     _lock: Lock = Lock()
+    _initialized: bool = False
 
     def __init__(self) -> None:
-        if hasattr(self, '_initialized') and self._initialized:
+        if self._initialized:
             return
         self._initialized = True
         self.chat_model = ChatModel()
