@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, NotRequired, TypedDict, TypeVar
 
 from langgraph.graph import StateGraph
-from utils.logging import get_logger
+from app.utils.logging import get_logger
 
 if TYPE_CHECKING:
     from langchain_core.messages import BaseMessage
