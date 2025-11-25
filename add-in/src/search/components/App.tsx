@@ -1,5 +1,5 @@
 import * as React from "react";
-import SearchAndChatApp from "../components/SearchAndChatApp";
+import SearchApp from "../components/SearchApp";
 import { makeStyles } from "@fluentui/react-components";
 
 interface AppProps {
@@ -16,7 +16,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
   const styles = useStyles();
   return (
     <div className={styles.root}>
-      <SearchAndChatApp title={props.title ?? "検索とAIチャット"} />
+      <SearchApp title={props.title ?? "検索"} />
     </div>
   );
 };

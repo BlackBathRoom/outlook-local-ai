@@ -79,15 +79,31 @@
                     ]
                 },
                 {
-                    "id": "SearchAndChatRuntime",
+                    "id": "SearchRuntime",
                     "type": "general",
                     "code": {
-                        "page": "https://localhost:3000/searchandchat.html"
+                        "page": "https://localhost:3000/search.html"
                     },
                     "lifetime": "short",
                     "actions": [
                         {
-                        "id": "SearchAndChatRuntimeShow",
+                        "id": "SearchRuntimeShow",
+                        "type": "openPage",
+                        "pinnable": false,
+                        "view": "dashboard"
+                        }
+                    ]
+                },
+                {
+                    "id": "ChatRuntime",
+                    "type": "general",
+                    "code": {
+                        "page": "https://localhost:3000/chat.html"
+                    },
+                    "lifetime": "short",
+                    "actions": [
+                        {
+                        "id": "ChatRuntimeShow",
                         "type": "openPage",
                         "pinnable": false,
                         "view": "dashboard"
@@ -147,9 +163,9 @@
                                             "actionId": "TaskPaneRuntimeShow"
                                         },
                                         {
-                                            "id": "searchAndChatOpenPaneButton",
+                                            "id": "searchOpenPaneButton",
                                             "type": "button",
-                                            "label": "Show Search & Chat",
+                                            "label": "Show Search",
                                             "icons": [
                                                 {
                                                 "size": 16,
@@ -165,11 +181,35 @@
                                                 }
                                             ],
                                             "supertip": {
-                                                "title": "Show Search & Chat",
-                                                "description": "Opens the Search & Chat pane."
+                                                "title": "Show Search",
+                                                "description": "Opens the Search pane."
                                             },
-                                            "actionId": "SearchAndChatRuntimeShow"
-                                            }
+                                            "actionId": "SearchRuntimeShow"
+                                        },
+                                        {
+                                            "id": "ChatOpenPaneButton",
+                                            "type": "button",
+                                            "label": "Show Chat",
+                                            "icons": [
+                                                {
+                                                "size": 16,
+                                                "url": "https://localhost:3000/assets/icon-16.png"
+                                                },
+                                                {
+                                                "size": 32,
+                                                "url": "https://localhost:3000/assets/icon-32.png"
+                                                },
+                                                {
+                                                "size": 80,
+                                                "url": "https://localhost:3000/assets/icon-80.png"
+                                                }
+                                            ],
+                                            "supertip": {
+                                                "title": "Show Chat",
+                                                "description": "Opens the Chat pane."
+                                            },
+                                            "actionId": "ChatRuntimeShow"
+                                        }
                                         
                                     ]
                                 }

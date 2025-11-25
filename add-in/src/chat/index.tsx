@@ -5,7 +5,7 @@ import { FluentProvider, webLightTheme } from "@fluentui/react-components";
 
 /* global document, Office */
 
-const title = "Contoso Search And Chat Add-in"
+const title = "Contoso Chat Add-in"
 
 const rootElement = document.getElementById("container");
 const root = rootElement ? createRoot(rootElement) : undefined;

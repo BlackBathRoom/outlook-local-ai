@@ -24,11 +24,14 @@ module.exports = async (env, options) => {
         import: ["./src/taskpane/index.tsx", "./src/taskpane/taskpane.html"],
         dependOn: "react",
       },
-      searchandchat: {
-        import: ["./src/searchandchat/index.tsx", "./src/searchandchat/searchandchat.html"],
+      search: {
+        import: ["./src/search/index.tsx", "./src/search/search.html"],
         dependOn: "react",
       },
-
+      chat: {
+        import: ["./src/chat/index.tsx", "./src/chat/chat.html"],
+        dependOn: "react",
+      },
     },
     output: {
       clean: true,
@@ -71,9 +74,14 @@ module.exports = async (env, options) => {
         chunks: ["polyfill", "taskpane", "react"],
       }),
       new HtmlWebpackPlugin({
-        filename: "searchandchat.html",
-        template: "./src/searchandchat/searchandchat.html", // 実際のHTMLファイルのパス
-        chunks: ["polyfill", "searchandchat", "react"], // 必要なエントリーポイントを指定
+        filename: "search.html",
+        template: "./src/search/search.html", // 実際のHTMLファイルのパス
+        chunks: ["polyfill", "search", "react"], // 必要なエントリーポイントを指定
+      }),
+      new HtmlWebpackPlugin({
+        filename: "chat.html",
+        template: "./src/chat/chat.html", // 実際のHTMLファイルのパス
+        chunks: ["polyfill", "chat", "react"], // 必要なエントリーポイントを指定
       }),
       new CopyWebpackPlugin({
         patterns: [
@@ -105,7 +113,10 @@ module.exports = async (env, options) => {
       },
       server: {
         type: "https",
-        options: env.WEBPACK_BUILD || options.https !== undefined ? options.https : await getHttpsOptions(),
+        options:
+          env.WEBPACK_BUILD || options.https !== undefined
+            ? options.https
+            : await getHttpsOptions(),
       },
       port: process.env.npm_package_config_dev_server_port || 3000,
     },
