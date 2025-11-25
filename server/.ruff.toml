@@ -24,6 +24,7 @@ unfixable = [
 convention = "google"
 
 [lint.per-file-ignores]
+"**/migration/**/*.py" = ["ALL"]
 "tests/**/*.py" = [
     "D",
     "S101",

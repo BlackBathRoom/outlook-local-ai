@@ -6,7 +6,8 @@
         "**/.venv",
         "**/node_modules",
         "**/__pycache__",
-        "**/study"
+        "**/study",
+        "**/migration"
     ],
     "typeCheckingMode": "standard",
     "venvPath": ".",
