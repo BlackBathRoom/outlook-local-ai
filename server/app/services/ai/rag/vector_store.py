@@ -17,13 +17,16 @@ COLLECTION_NAME = "main_collection"
 
 
 @dataclass
-class QueryResultVectorMessage:
+class QueryResultVectormail:
     mail: VectorMail
     score: float
 
 
 class VectorStore:
     def __init__(self) -> None:
+        if app_resource.embedding_model.model is None:
+            app_resource.embedding_model.load_model()
+
         self._db: Chroma = Chroma(
             COLLECTION_NAME,
             embedding_function=app_resource.embedding_model.model,
@@ -53,7 +56,7 @@ class VectorStore:
         self,
         query: str,
         top_k: int = 3,
-    ) -> list[QueryResultVectorMessage]:
+    ) -> list[QueryResultVectormail]:
         """類似度検索を行う.
 
         Returns:
@@ -65,8 +68,8 @@ class VectorStore:
             k=top_k,
         )
         return [
-            QueryResultVectorMessage(
-                mail=VectorMail(doc.page_content, doc.metadata.get("message_id"), doc.metadata.get("section_id")),
+            QueryResultVectormail(
+                mail=VectorMail(doc.page_content, doc.metadata.get("mail_id"), doc.metadata.get("section_id")),
                 score=score,
             )
             for doc, score in results
@@ -86,19 +89,19 @@ if __name__ == "__main__":
         store.add_documents(
             [
                 VectorMail(
-                    message="重力とは、質量を持つ物体同士が引き合う力のことである。",
-                    message_id="msg1",
-                    section_id="sec1",
+                    mail_part="重力とは、質量を持つ物体同士が引き合う力のことである。",
+                    mail_id="msg1",
+                    section_id=1,
                 ),
                 VectorMail(
-                    message="週末の打ち合わせにつきましては、土曜日の午後2時からを予定しております。",
-                    message_id="msg2",
-                    section_id="sec2",
+                    mail_part="週末の打ち合わせにつきましては、土曜日の午後2時からを予定しております。",
+                    mail_id="msg2",
+                    section_id=1,
                 ),
                 VectorMail(
-                    message="Pythonは、1991年にグイド・ヴァンロッサムによって開発された高水準のプログラミング言語である。",
-                    message_id="msg3",
-                    section_id="sec3",
+                    mail_part="Pythonは、1991年にグイド・ヴァンロッサムによって開発された高水準のプログラミング言語である。",
+                    mail_id="msg3",
+                    section_id=1,
                 ),
             ]
         )
@@ -107,4 +110,4 @@ if __name__ == "__main__":
 
     search_results = store.similarity_search("プログラミング言語とは", top_k=3)
     for res in search_results:
-        print(f"Score: {res.score}, Message: {res.mail.message}")  # noqa: T201
+        print(f"Score: {res.score}, mail: {res.mail.mail_part}")  # noqa: T201

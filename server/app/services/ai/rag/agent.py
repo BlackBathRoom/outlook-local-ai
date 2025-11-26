@@ -56,7 +56,7 @@ class RAGAgent(BaseGraph[RAGAgentState, Return]):
 
     def _gen_docs_prompt(self, messages: list[VectorMail]) -> str:
         prompt = "## 文書\n"
-        docs = [f"### 文書 {m.message_id}\n{m.message}\n" for m in messages]
+        docs = [f"### 文書 {m.mail_id}\n{m.mail_part}\n" for m in messages]
         prompt += "\n".join(docs)
         return prompt
 
@@ -81,7 +81,7 @@ class RAGAgent(BaseGraph[RAGAgentState, Return]):
 
         return {
             "result": Return(
-                response=resp.content, mail_ids=[mail.message_id for mail in mails if mail.message_id is not None]
+                response=resp.content, mail_ids=[mail.mail_id for mail in mails if mail.mail_id is not None]
             )
         }
 
@@ -97,19 +97,19 @@ if __name__ == "__main__":
         store.add_documents(
             [
                 VectorMail(
-                    message="新商品プロモーションに関するミーティングを火曜日午後２時から開催します。",
-                    message_id="msg1",
-                    section_id="sec1",
+                    mail_part="新商品プロモーションに関するミーティングを火曜日午後２時から開催します。",
+                    mail_id="msg1",
+                    section_id=1
                 ),
                 VectorMail(
-                    message="Hoge社と新しい製品の開発に協力するための契約を締結しました。この契約により、双方は新しい製品の開発に協力し、共同開発の成果を共有することになりました。",
-                    message_id="msg2",
-                    section_id="sec2",
+                    mail_part="Hoge社と新しい製品の開発に協力するための契約を締結しました。この契約により、双方は新しい製品の開発に協力し、共同開発の成果を共有することになりました。",
+                    mail_id="msg2",
+                    section_id=1
                 ),
                 VectorMail(
-                    message="Zoom上で開催します。参加者はfugaに資料の共有を、月曜の午前中に行ってください。",
-                    message_id="msg3",
-                    section_id="sec3",
+                    mail_part="Zoom上で開催します。参加者はfugaに資料の共有を、月曜の午前中に行ってください。",
+                    mail_id="msg3",
+                    section_id=1
                 ),
             ]
         )
