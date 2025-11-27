@@ -22,20 +22,9 @@ const ChatPage: React.FC = () => {
     setInput("");
   };
 
-  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSend();
-    }
-  };
-
   return (
     <div>
-      <div
-        style={{
-          maxHeight: "300px", // 必要に応じて高さ調整
-          overflowY: "auto",
-        }}
-      >
+      <div className={styles.messagesArea}>
         {messages.map((msg, idx) => (
           <div key={idx} className={styles.message}>
             {msg}
@@ -43,19 +32,24 @@ const ChatPage: React.FC = () => {
         ))}
         <div ref={messagesEndRef} />
       </div>
-      <div className={styles.inputArea}>
+      <form
+        className={styles.inputArea}
+        onSubmit={e => {
+          e.preventDefault();
+          handleSend();
+        }}
+      >
         <input
           className={styles.input}
           type="text"
           value={input}
           onChange={e => setInput(e.target.value)}
-          onKeyDown={handleInputKeyDown}
           placeholder="メッセージを入力"
         />
-        <button className={styles.sendButton} onClick={handleSend}>
+        <button className={styles.sendButton} type="submit">
           送信
         </button>
-      </div>
+      </form>
     </div>
   );
 };

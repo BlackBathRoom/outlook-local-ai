@@ -31,27 +31,8 @@ const App: React.FC<AppProps> = () => {
     <div className={styles.root} style={{ overflowX: "hidden" }}>
       <div className={styles.sidebarFull}>
         {/* navの外側の余白・白い四角形(div)を完全に削除 */}
-        <nav
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center", // 追加：中央寄せ
-            padding: "0 0 0 0",
-            overflowX: "auto",
-            whiteSpace: "nowrap",
-            background: "transparent"
-          }}
-        >
-          <ul
-            style={{
-              display: "flex",
-              gap: "24px",
-              margin: 0,
-              padding: "0 0 0 12px",
-              listStyle: "none"
-            }}
-          >
+        <nav className={styles.nav}>
+          <ul className={styles.navList}>
             <li>
               <Link className={styles.navLink} to="/chat">Chat</Link>
             </li>

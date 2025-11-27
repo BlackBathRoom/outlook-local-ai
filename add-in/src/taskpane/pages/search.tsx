@@ -6,33 +6,26 @@ const SearchPage: React.FC = () => {
   const [query, setQuery] = React.useState<string>("");
   const [results, setResults] = React.useState<string[]>([]);
 
-  const handleSearch = () => {
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (query.trim() === "") return;
-    // 検索処理（例: ダミー結果）
     setResults([`「${query}」の検索結果1`, `「${query}」の検索結果2`]);
-  };
-
-  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
   };
 
   return (
     <div>
-      <div className={styles.searchBar}>
+      <form className={styles.searchBar} onSubmit={handleSearch}>
         <input
           className={styles.input}
           type="text"
           value={query}
           onChange={e => setQuery(e.target.value)}
-          onKeyDown={handleInputKeyDown}
           placeholder="検索ワードを入力"
         />
-        <button className={styles.searchButton} onClick={handleSearch}>
+        <button className={styles.searchButton} type="submit">
           検索
         </button>
-      </div>
+      </form>
       <ul className={styles.resultList}>
         {results.map((result, idx) => (
           <li key={idx} className={styles.resultItem}>
