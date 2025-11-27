@@ -15,11 +15,22 @@ const useStyles = makeStyles({
     flexDirection: "column",
     alignItems: "center",
   },
-  navList: {
-    listStyle: "none",
-    padding: 0,
-    margin: 0,
+    nav: {
     width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center", // 追加：中央寄せ
+    padding: "0",
+    overflowX: "auto",
+    whiteSpace: "nowrap",
+    background: "transparent",
+  },
+  navList: {
+    display: "flex",
+    gap: "24px",
+    margin: 0,
+    padding: "0 0 0 12px",
+    listStyle: "none",
   },
   navItem: {
     margin: "16px 0",
