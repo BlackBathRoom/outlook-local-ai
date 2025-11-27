@@ -14,8 +14,8 @@ const useChatStyles = makeStyles({
     background: "#d1f0ff",
     alignSelf: "flex-end",
   },
-    messagesArea: {
-    maxHeight: "300px", // 必要に応じて高さ調整
+  messagesArea: {
+    maxHeight: "40vh", // 画面高さの40%を上限に
     overflowY: "auto",
     width: "100%",
     marginBottom: "8px",
