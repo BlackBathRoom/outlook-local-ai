@@ -4,5 +4,5 @@ from sqlmodel import Field, SQLModel
 
 
 class Tag(SQLModel, table=True):
-    id: str = Field(default_factory=uuid4, primary_key=True)
+    id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
     name: str = Field(max_length=255)
