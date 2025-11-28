@@ -1,11 +1,36 @@
 from __future__ import annotations
 
-from fastapi import BackgroundTasks, FastAPI
+from contextlib import asynccontextmanager
+from typing import TYPE_CHECKING
+
+from fastapi import APIRouter, BackgroundTasks, FastAPI
+from sqlmodel import SQLModel
 from starlette.middleware.cors import CORSMiddleware
 
 from app.app_resource import app_resource
+from app.routers import ai_router, tags_router, vector_store_router
+from app.services.database.engine import get_engine
+from app.utils.logging import get_logger
 
-app = FastAPI()
+if TYPE_CHECKING:
+    from collections.abc import AsyncGenerator
+
+logger = get_logger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncGenerator:
+    engine = get_engine()
+    try:
+        SQLModel.metadata.create_all(engine)
+        yield
+    except Exception:
+        logger.exception("Error during lifespan")
+    finally:
+        engine.dispose()
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,6 +38,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+routers: list[tuple[str, APIRouter]] = [("/api", ai_router), ("/api", tags_router), ("/api", vector_store_router)]
+
+for prefix, router in routers:
+    app.include_router(router, prefix=prefix)
 
 
 def startup_tasks() -> None:
@@ -22,11 +52,6 @@ def startup_tasks() -> None:
 @app.post("/trigger-startup")
 def trigger_startup(background_task: BackgroundTasks) -> None:
     background_task.add_task(startup_tasks)
-
-
-@app.get("/")
-async def demo() -> dict[str, str]:
-    return {"message": "Hello World"}
 
 
 if __name__ == "__main__":

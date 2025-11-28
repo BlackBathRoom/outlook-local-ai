@@ -5,14 +5,21 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "alembic>=1.17.2",
+    "datasets>=4.4.1",
     "fastapi>=0.121.3",
     "huggingface-hub[hf-xet]>=0.34.4",
     "langchain>=0.3.27",
+    "langchain-chroma>=1.0.0",
     "langchain-huggingface>=0.3.1",
     "langchain-openvino-genai",
+    "langchain-text-splitters>=1.0.0",
     "langgraph>=0.6.6",
     "optimum[nncf,openvino]>=1.27.0",
+    "pydantic>=2.12.4",
     "sentence-transformers>=5.1.2",
+    "sentencepiece>=0.2.1",
+    "sqlmodel>=0.0.27",
 ]
 
 [dependency-groups]
@@ -25,6 +32,7 @@ dev = [
 ]
 
 [tool.taskipy.tasks]
+migration = "alembic upgrade head"
 dev = "uv run uvicorn app.main:app --reload"
 fmt = "uv run ruff check --fix && uv run ruff format"
 type = "uv run pyright app"
