@@ -15,10 +15,10 @@ type Role = Literal["user", "assistant"]
 
 
 class ChatAgentState(BaseState[str]):
-    messages: list[BaseMessage] | list[tuple[Role, str]]
+    messages: list[HumanMessage | AIMessage] | list[tuple[Role, str]]
 
 
-message_role_map: dict[Role, type[BaseMessage]] = {"user": HumanMessage, "assistant": AIMessage}
+message_role_map: dict[Role, type[HumanMessage | AIMessage]] = {"user": HumanMessage, "assistant": AIMessage}
 
 
 class ChatAgent(BaseGraph[ChatAgentState, str]):
@@ -37,13 +37,8 @@ class ChatAgent(BaseGraph[ChatAgentState, str]):
         return builder
 
     def _convert_message(self, message: BaseMessage | tuple[Role, str]) -> BaseMessage:
-        if type(message) is BaseMessage:
-            msg = "Invalid message type"
-            raise RuntimeError(msg)
-
         if isinstance(message, tuple):
             return message_role_map[message[0]](content=message[1])
-
         return message
 
     def _check_message(self, state: ChatAgentState) -> dict[str, list[BaseMessage]]:
@@ -53,10 +48,10 @@ class ChatAgent(BaseGraph[ChatAgentState, str]):
         with app_resource.chat_model.use_model() as model:
             res = model.invoke(state["messages"])
 
-        if not isinstance(res, str):
+        if not isinstance(res.content, str):
             msg = "Unexpected response type"
             raise TypeError(msg)
-        return {"response": res}
+        return {"response": res.content}
 
     def stream(self, state: ChatAgentState) -> Iterator[str]:
         messages = self._check_message(state)["messages"]
@@ -64,6 +59,7 @@ class ChatAgent(BaseGraph[ChatAgentState, str]):
             for chunk in model.stream(messages):
                 if isinstance(chunk.content, str):
                     yield chunk.content
+
 
 if __name__ == "__main__":
     app_resource.load_models()
