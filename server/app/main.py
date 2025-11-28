@@ -30,7 +30,7 @@ async def lifespan(_: FastAPI) -> AsyncGenerator:
         engine.dispose()
 
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
