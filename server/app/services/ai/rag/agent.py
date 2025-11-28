@@ -99,17 +99,17 @@ if __name__ == "__main__":
                 VectorMail(
                     mail_part="新商品プロモーションに関するミーティングを火曜日午後２時から開催します。",
                     mail_id="msg1",
-                    section_id=1
+                    section_id=1,
                 ),
                 VectorMail(
                     mail_part="Hoge社と新しい製品の開発に協力するための契約を締結しました。この契約により、双方は新しい製品の開発に協力し、共同開発の成果を共有することになりました。",
                     mail_id="msg2",
-                    section_id=1
+                    section_id=1,
                 ),
                 VectorMail(
                     mail_part="Zoom上で開催します。参加者はfugaに資料の共有を、月曜の午前中に行ってください。",
                     mail_id="msg3",
-                    section_id=1
+                    section_id=1,
                 ),
             ]
         )

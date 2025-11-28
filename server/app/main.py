@@ -39,10 +39,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-routers: list[tuple[str, APIRouter]] = [
-    ("/api", ai_router),
-    ("/api", tags_router),
-    ("/api", vector_store_router)]
+routers: list[tuple[str, APIRouter]] = [("/api", ai_router), ("/api", tags_router), ("/api", vector_store_router)]
 
 for prefix, router in routers:
     app.include_router(router, prefix=prefix)
