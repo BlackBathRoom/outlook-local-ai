@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from functools import wraps
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Literal
 
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError, OperationalError, ProgrammingError, SQLAlchemyError
@@ -51,11 +51,35 @@ def create(engine: Engine, obj: SQLModel) -> None:
         session.refresh(obj)
 
 
+type Operator = Literal["==", "!=", "<", "<=", ">", ">="]
+type Condition = tuple[str, Operator, Any]
+
+CONDITION_MAP: dict[Operator, Callable[[Any, Any], bool]] = {
+    "==": lambda field, value: field == value,
+    "!=": lambda field, value: field != value,
+    "<": lambda field, value: field < value,
+    "<=": lambda field, value: field <= value,
+    ">": lambda field, value: field > value,
+    ">=": lambda field, value: field >= value,
+}
+
+
 @db_error_handler
-def read[T: SQLModel](engine: Engine, model: type[T]) -> Sequence[T]:
+def read[T: SQLModel](engine: Engine, model: type[T], where: list[Condition] | None = None) -> Sequence[T]:
     logger.debug("Reading %s", model)
     with Session(engine) as session:
         statement = select(model)
+
+        if where is not None:
+            for field_name, operator, value in where:
+                field = getattr(model, field_name)
+                if field is None:
+                    msg = f"Field '{field_name}' does not exist on model '{model.__name__}'"
+                    logger.error(msg)
+
+                condition = CONDITION_MAP[operator](field, value)
+                statement = statement.where(condition)
+
         return session.exec(statement).all()
 
 

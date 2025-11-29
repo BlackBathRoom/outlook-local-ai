@@ -16,3 +16,19 @@ export async function insertText(text: string) {
     console.log("Error: " + error);
   }
 }
+
+export const getMailText = async () => {
+  try {
+    const item = Office.context.mailbox.item;
+    item.body.getAsync(
+      Office.CoercionType.Text,
+      (result) => {
+        if (result.status === Office.AsyncResultStatus.Succeeded) {
+          console.log("Text Body:", result.value);
+        }
+      }
+    );
+  } catch (error) {
+    console.log("Error: " + error);
+  }
+}
