@@ -1,17 +1,10 @@
 import * as React from "react";
 import { HashRouter, Route, Switch, Link, useLocation, Redirect } from "react-router-dom";
 import useStyles from "./styles/App.styles";
-import useChatStyles from "./styles/chat.style";
-import useSearchStyles from "./styles/search.style";
 import ChatPage from "./pages/chat";
 import SearchPage from "./pages/search";
-import { MailBodyProvider } from "./pages/knowledge";
-
-const getPageName = (pathname: string) => {
-  if (pathname === "/chat") return "Chat";
-  if (pathname === "/search") return "Search";
-  return "Home";
-};
+import Knowledge from "./pages/knowledge";
+import { MailBodyProvider } from "./feature/context";
 
 interface AppProps {
   title: string;
@@ -19,8 +12,6 @@ interface AppProps {
 
 const App: React.FC<AppProps> = () => {
   const styles = useStyles();
-  const chatStyles = useChatStyles();
-  const searchStyles = useSearchStyles();
   const location = useLocation();
 
   // "/" でアクセスされた場合は /search にリダイレクト
@@ -36,18 +27,27 @@ const App: React.FC<AppProps> = () => {
           <ul className={styles.navList}>
             <li>
               <Link
-                className={`${styles.navLink} ${location.pathname === "/chat" ? styles.activeNavLink : ""}`}
+                className={`${styles.navLink} 
+                ${location.pathname === "/chat" ? styles.activeNavLink : ""}`}
                 to="/chat"
               >
                 Chat
               </Link>
             </li>
             <li>
-              <Link
-                className={`${styles.navLink} ${location.pathname === "/search" ? styles.activeNavLink : ""}`}
+              <Link className={`${styles.navLink} 
+                ${location.pathname === "/search" ? styles.activeNavLink : ""}`}
                 to="/search"
               >
                 Search
+              </Link>
+            </li>
+            <li>
+              <Link className={`${styles.navLink} 
+                ${location.pathname === "/Knowledge" ? styles.activeNavLink : ""}`}
+                to="/Knowledge"
+              >
+                Knowledge
               </Link>
             </li>
             {/* 必要に応じてリンクを追加 */}
@@ -64,6 +64,11 @@ const App: React.FC<AppProps> = () => {
               <Route path="/search">
                 <div className={styles.container}>
                   <SearchPage />
+                </div>
+              </Route>
+              <Route path="/knowledge">
+                <div className={styles.container}>
+                  <Knowledge />
                 </div>
               </Route>
             </MailBodyProvider>
