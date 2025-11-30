@@ -27,7 +27,8 @@ const KnowledgePage: React.FC = () => {
   const mailBody = useMailBody();
   const [open, setOpen] = useState(false);
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
-
+  const [tags, setTags] = useState<Tag[]>(tagList);
+  const [newTagName, setNewTagName] = useState("");
   const styles = useKnowledgeStyles();
 
   const handleTagChange = (id: string) => {
@@ -36,7 +37,15 @@ const KnowledgePage: React.FC = () => {
     );
   };
 
-
+  const handleAddTag = () => {
+    if (!newTagName.trim()) return;
+    const newTag: Tag = {
+      id: (tags.length + 1).toString(),
+      name: newTagName.trim(),
+    };
+    setTags([...tags, newTag]);
+    setNewTagName("");
+  };
 
 
   return (
@@ -48,7 +57,46 @@ const KnowledgePage: React.FC = () => {
       <Modal open={open} onClose={() => setOpen(false)}>
         <pre>{mailBody}</pre>
       </Modal>
-
+      {/* タグ付けスペースをToDoリスト風に表示 */}
+      <div className={styles.tagArea}>
+        <span className={styles.tagLabel}>タグ付け：</span>
+        <ul className={styles.tagList}>
+          {tags.map(tag => (
+            <li key={tag.id} className={styles.tagItem}>
+              <label className={styles.tagLabelItem}>
+                <input
+                  type="checkbox"
+                  checked={selectedTagIds.includes(tag.id)}
+                  onChange={() => handleTagChange(tag.id)}
+                  className={styles.tagCheckbox}
+                />
+                <span>{tag.name}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+        <form
+          className={styles.tagInputArea}
+          onSubmit={e => {
+            e.preventDefault();
+            handleAddTag();
+          }}
+        >
+          <input
+            type="text"
+            value={newTagName}
+            onChange={e => setNewTagName(e.target.value)}
+            placeholder="新しいタグ名"
+            className={styles.tagInput}
+          />
+          <button
+            className={styles.addTagButton}
+            onClick={handleAddTag}
+          >
+            追加
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

@@ -58,6 +58,54 @@ const useKnowledgeStyles = makeStyles({
     fontSize: "0.95em",
     marginTop: "0.5em",
   },
+  // タグ
+  addTagButton: {
+    background: "#1976d2",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    padding: "0 16px",
+    height: "32px", 
+    cursor: "pointer",
+    fontSize: "0.95em",
+    minWidth: "64px", // 最小幅を設定
+    display: "inline-block",
+  },
+  tagArea: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px", // ここを追加
+  },
+  tagLabel: {
+    fontWeight: "bold",
+  },
+  tagList: {
+    listStyle: "none",
+    paddingLeft: 0,
+    margin: 0,
+  },
+  tagItem: {
+    marginBottom: "6px",
+  },
+  tagLabelItem: {
+    display: "flex",
+    alignItems: "center",
+  },
+  tagCheckbox: {
+    marginRight: "8px",
+  },
+  tagInputArea: {
+    marginTop: "0.5em",
+    display: "flex",
+    alignItems: "center",
+  },
+  tagInput: {
+    marginRight: "8px",
+    padding: "0 16px", // ボタンと同じパディング
+    height: "32px",      // ボタンと同じ高さ
+    boxSizing: "border-box",
+    fontSize: "0.95em",
+  },
 });
 
 export default useKnowledgeStyles;
