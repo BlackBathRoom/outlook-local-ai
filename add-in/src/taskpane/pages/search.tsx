@@ -1,12 +1,14 @@
 import * as React from "react";
 import useSearchStyles from "../styles/search.style";
+import { getMailText } from "../taskpane";
 
 const SearchPage: React.FC = () => {
   const styles = useSearchStyles();
   const [query, setQuery] = React.useState<string>("");
   const [results, setResults] = React.useState<string[]>([]);
 
-  const handleSearch = (e?: React.FormEvent) => {
+  const handleSearch = async (e?: React.FormEvent) => {
+    await getMailText();
     if (e) e.preventDefault();
     if (query.trim() === "") return;
     setResults([`「${query}」の検索結果1`, `「${query}」の検索結果2`]);

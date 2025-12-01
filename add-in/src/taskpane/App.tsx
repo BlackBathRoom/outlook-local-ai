@@ -57,7 +57,7 @@ const App: React.FC<AppProps> = () => {
         <div className={styles.pageContent}>
           <Switch>
             <Route path="/chat">
-              <div className={styles.container}>
+              <div>
                 <ChatPage />
               </div>
             </Route>

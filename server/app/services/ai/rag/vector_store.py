@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from langchain_chroma import Chroma
@@ -10,6 +11,9 @@ from app.app_resource import app_resource
 from app.services.ai.rag.ruri_prefix import QUERY_PREFIX
 from app.services.ai.rag.vector_mail import VectorMail
 from app.utils.logging import get_logger
+
+if TYPE_CHECKING:
+    from app.models import Tag
 
 logger = get_logger(__name__)
 
@@ -53,9 +57,7 @@ class VectorStore:
         return ids
 
     def similarity_search(
-        self,
-        query: str,
-        top_k: int = 3,
+        self, query: str, top_k: int = 3, filter_tags: list[Tag] | None = None
     ) -> list[QueryResultVectormail]:
         """類似度検索を行う.
 
@@ -66,6 +68,7 @@ class VectorStore:
         results = self._db.similarity_search_with_relevance_scores(
             self._format_ruri_query(query),
             k=top_k,
+            filter={tag.name: tag.id for tag in filter_tags} if filter_tags else None,
         )
         return [
             QueryResultVectormail(

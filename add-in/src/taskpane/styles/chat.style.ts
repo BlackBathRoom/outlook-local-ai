@@ -1,29 +1,43 @@
 import { makeStyles } from "@fluentui/react-components";
 
 const useChatStyles = makeStyles({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px",
+    width: "100%",
+    minHeight: "100%",
+  },
   message: {
-    padding: "12px",
-    borderRadius: "6px",
+    padding: "6px",
+    borderRadius: "4px",
     background: "#e3e7ee",
     color: "#333",
-    marginBottom: "8px",
     alignSelf: "flex-start",
-    maxWidth: "70%",
+    maxWidth: "80%",
   },
   userMessage: {
+    padding: "6px",
+    borderRadius: "4px",
     background: "#d1f0ff",
+    color: "#333",
     alignSelf: "flex-end",
+    maxWidth: "80%",
   },
   messagesArea: {
-    maxHeight: "40vh", // 画面高さの40%を上限に
+    flexGrow: 1,
+    gap: "8px",
     overflowY: "auto",
+    display: "flex",
+    flexDirection: "column",
     width: "100%",
-    marginBottom: "8px",
   },
   inputArea: {
-    marginTop: "auto",
     display: "flex",
-    gap: "8px",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    gap: "6px",
   },
   input: {
     flex: 1,
