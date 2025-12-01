@@ -15,8 +15,4 @@ interface SearchDTO {
   tags: string[];
 }
 
-export type {
-  RegistMail,
-  MailDTO,
-  SearchDTO,
-};
+export type { RegistMail, MailDTO, SearchDTO };

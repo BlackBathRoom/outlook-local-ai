@@ -4,7 +4,6 @@ interface Props<T> {
   fetchFn: () => Promise<T>;
 }
 
-
 interface Return<T> {
   data: NonNullable<T> | null;
   isError: boolean;
@@ -27,7 +26,6 @@ export const useFetch = <TData>({ fetchFn }: Props<NonNullable<TData>>): Return<
       .then((res) => setData(res))
       .catch(() => setIsError(true))
       .finally(() => setIsLoading(false));
-
   }, [isLoading]);
 
   const refetch = () => setIsLoading(true);
