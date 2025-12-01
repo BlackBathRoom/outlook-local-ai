@@ -1,6 +1,6 @@
 interface RegistMail {
   id: string;
-  body: string;
+  mail: string;
   tags: string[];
 }
 
