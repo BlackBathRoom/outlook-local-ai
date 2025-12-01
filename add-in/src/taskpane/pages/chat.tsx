@@ -34,7 +34,7 @@ const ChatPage: React.FC = () => {
       </div>
       <form
         className={styles.inputArea}
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           handleSend();
         }}
@@ -43,7 +43,7 @@ const ChatPage: React.FC = () => {
           className={styles.input}
           type="text"
           value={input}
-          onChange={e => setInput(e.target.value)}
+          onChange={(e) => setInput(e.target.value)}
           placeholder="メッセージを入力"
         />
         <button className={styles.sendButton} type="submit">

@@ -16,7 +16,7 @@ const useStyles = makeStyles({
     flexDirection: "column",
     alignItems: "center",
   },
-    nav: {
+  nav: {
     width: "100%",
     display: "flex",
     alignItems: "center",
@@ -51,6 +51,9 @@ const useStyles = makeStyles({
       background: "#e9eaef", // 白強めのグレー
     },
   },
+  activeNavLink: {
+    borderBottom: "2px solid #1976d2", // お好みの色に変更可能
+  },
   main: {
     flex: 1,
     background: "#f5f6fa", // 白強めのグレー
@@ -71,7 +74,7 @@ const useStyles = makeStyles({
     padding: "32px", // cardの周りの余白
     display: "flex",
     justifyContent: "center", // カードを中央寄せ
-    alignItems: "center",     // 垂直方向も中央寄せ
+    alignItems: "center", // 垂直方向も中央寄せ
     boxSizing: "border-box",
     background: "transparent", // 余白部分は背景なし
   },
@@ -79,9 +82,9 @@ const useStyles = makeStyles({
     width: "100%",
     maxWidth: "500px",
     minHeight: "300px",
-    background: "#fff",                // カードらしい白背景
-    borderRadius: "16px",              // 角丸を強調
-    margin: "16px auto",               // 上下余白を広めに
+    background: "#fff", // カードらしい白背景
+    borderRadius: "16px", // 角丸を強調
+    margin: "16px auto", // 上下余白を広めに
     boxSizing: "border-box",
     boxShadow: "0 4px 24px rgba(0,0,0,0.10)", // 影を強調
     display: "flex",
@@ -89,9 +92,9 @@ const useStyles = makeStyles({
     gap: "16px",
     alignSelf: "center",
     overflow: "auto",
-    maxHeight: "calc(100vh - 64px)",   // 余白分を調整
-    padding: "32px",                   // 内側余白を広めに
-    transition: "box-shadow 0.2s",     // ホバー時のアニメーション用
+    maxHeight: "calc(100vh - 64px)", // 余白分を調整
+    padding: "32px", // 内側余白を広めに
+    transition: "box-shadow 0.2s", // ホバー時のアニメーション用
     "&:hover": {
       boxShadow: "0 8px 32px rgba(0,0,0,0.16)", // ホバー時さらに影
     },
