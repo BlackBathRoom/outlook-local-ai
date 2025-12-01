@@ -12,7 +12,7 @@ const SearchPage: React.FC = () => {
     setResults([`「${query}」の検索結果1`, `「${query}」の検索結果2`]);
   };
 
-// ...existing code...
+  // ...existing code...
   return (
     <div>
       <h2>メール本文</h2>
@@ -21,7 +21,7 @@ const SearchPage: React.FC = () => {
           className={styles.input}
           type="text"
           value={query}
-          onChange={e => setQuery(e.target.value)}
+          onChange={(e) => setQuery(e.target.value)}
           placeholder="検索ワードを入力"
         />
         <button className={styles.searchButton} type="submit">

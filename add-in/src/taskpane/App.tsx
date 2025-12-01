@@ -34,7 +34,8 @@ const App: React.FC<AppProps> = () => {
               </Link>
             </li>
             <li>
-              <Link className={`${styles.navLink} 
+              <Link
+                className={`${styles.navLink} 
                 ${location.pathname === "/search" ? styles.activeNavLink : ""}`}
                 to="/search"
               >
@@ -42,7 +43,8 @@ const App: React.FC<AppProps> = () => {
               </Link>
             </li>
             <li>
-              <Link className={`${styles.navLink} 
+              <Link
+                className={`${styles.navLink} 
                 ${location.pathname === "/Knowledge" ? styles.activeNavLink : ""}`}
                 to="/Knowledge"
               >
@@ -54,21 +56,21 @@ const App: React.FC<AppProps> = () => {
         </nav>
         <div className={styles.pageContent}>
           <Switch>
-              <Route path="/chat">
-                <div className={styles.container}>
-                  <ChatPage />
-                </div>
-              </Route>
-              <Route path="/search">
-                <div className={styles.container}>
-                  <SearchPage />
-                </div>
-              </Route>
-              <Route path="/knowledge">
-                <div className={styles.container}>
-                  <Knowledge />
-                </div>
-              </Route>
+            <Route path="/chat">
+              <div className={styles.container}>
+                <ChatPage />
+              </div>
+            </Route>
+            <Route path="/search">
+              <div className={styles.container}>
+                <SearchPage />
+              </div>
+            </Route>
+            <Route path="/knowledge">
+              <div className={styles.container}>
+                <Knowledge />
+              </div>
+            </Route>
           </Switch>
         </div>
       </div>

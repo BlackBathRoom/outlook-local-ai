@@ -7,7 +7,7 @@ const useKnowledgeStyles = makeStyles({
     flexDirection: "column",
     width: "100%",
     height: "100%",
-    gap: "8px"
+    gap: "8px",
   },
   modalContainer: {
     background: "#fff",
@@ -22,7 +22,7 @@ const useKnowledgeStyles = makeStyles({
     margin: "0 12px",
     display: "flex",
     flexDirection: "column",
-    gap: "4px"
+    gap: "4px",
   },
   modalOverlay: {
     position: "fixed",
