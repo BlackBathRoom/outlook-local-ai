@@ -30,6 +30,10 @@ const ChatPage: React.FC = () => {
       },
       body: JSON.stringify({ messages: [...messages, { role: "user", message: message }] }),
     });
+    if (resp.body === null) {
+      console.error("Response body is null");
+      return;
+    }
     const reader = resp.body.getReader();
     
     let assistantMessage = "";
