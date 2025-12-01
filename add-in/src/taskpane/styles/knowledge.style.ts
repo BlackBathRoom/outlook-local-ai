@@ -57,6 +57,7 @@ const useKnowledgeStyles = makeStyles({
     cursor: "pointer",
     fontSize: "0.95em",
     marginTop: "0.5em",
+    height: "32px",
   },
   // タグ
   addTagButton: {
@@ -112,7 +113,7 @@ const useKnowledgeStyles = makeStyles({
     border: "none",
     borderTop: "1px solid #ccc",
   },
-  // ナレッジに追加
+  // ナレッジに追加ボタン
   centerArea: {
     display: "flex",
     justifyContent: "center",
