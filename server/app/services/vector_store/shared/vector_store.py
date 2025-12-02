@@ -26,13 +26,10 @@ class ResultSearch:
     metadata: dict = field(default_factory=dict)
 
 
-
 class VectorStore:
     def __init__(self, collection: str) -> None:
         self.client = app_resource.chroma_client
-        self.collection = self.client.get_or_create_collection(
-            name=collection, metadata={"hnsw:space": "cosine"}
-        )
+        self.collection = self.client.get_or_create_collection(name=collection, metadata={"hnsw:space": "cosine"})
         app_resource.embedding_model.load_model()
 
     def _trans_to_document_form(self, text: str) -> str:
@@ -73,7 +70,12 @@ class VectorStore:
             raise ValueError(msg) from None
 
         return [
-            ResultSearch(doc_id=ids[i], text=documents[i], distance=distances[i], metadata=metadatas[i])
+            ResultSearch(
+                doc_id=ids[i],
+                text=documents[i].removeprefix(DOCUMENT_PREFIX),
+                distance=distances[i],
+                metadata=metadatas[i],
+            )
             for i in range(len(ids))
         ]
 

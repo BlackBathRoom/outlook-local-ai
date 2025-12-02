@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from langchain_core.documents import Document
 
 from app.services.vector_store.mail.splitter import splitter
-from app.services.vector_store.shared.ruri_prefix import DOCUMENT_PREFIX
 
 if TYPE_CHECKING:
     from app.models import Tag
@@ -27,7 +26,7 @@ class VectorMail(Document):
 
     @property
     def part(self) -> str:
-        return self.page_content.removeprefix(DOCUMENT_PREFIX)
+        return self.page_content
 
     @property
     def mail_id(self) -> str:
