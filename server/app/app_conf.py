@@ -15,6 +15,10 @@ BASE_DB_DIR = BASE_DIR / "database"
 DATABASE_PATH = BASE_DB_DIR / "db.sqlite3"
 VECTOR_STORE_PATH = BASE_DB_DIR / "vector_store"
 
-# VECTOR_STORE_COLLECTION
+# collections
 MAIL_COLLECTION = "mail_collection"
 CONCEPT_COLLECTION = "concept_collection"
+
+# search weights
+QUERY_WEIGHT = 0.7
+CONCEPT_WEIGHT = 0.3

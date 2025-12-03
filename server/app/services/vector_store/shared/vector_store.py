@@ -23,6 +23,7 @@ class ResultSearch:
     doc_id: str
     text: str
     score: float
+    embedding: list[float]
     metadata: dict = field(default_factory=dict)
 
 
@@ -67,14 +68,18 @@ class VectorStore:
             embeddings=list(embeddings),  # 型チェッカーに怒られるのでlist関数でラップ
         )
 
-    def search(self, query: str, *, top_k: int = 3, where: Where | None = None) -> list[ResultSearch]:
+    def encode_query(self, query: str) -> list[float]:
         with app_resource.embedding_model.use_model() as model:
-            query_embedding = model.embed_query(self._trans_to_query_form(query))
+            return model.embed_query(self._trans_to_query_form(query))
+
+    def _search(
+        self, query_embedding: list[float], *, top_k: int = 3, where: Where | None = None
+    ) -> list[ResultSearch]:
         result = self.collection.query(
             query_embeddings=query_embedding,
             n_results=top_k,
             where=where,
-            include=["documents", "metadatas", "distances"],
+            include=["documents", "metadatas", "distances", "embeddings"],
         )
         ids = result.get("ids")[0]
 
@@ -82,6 +87,7 @@ class VectorStore:
             documents = cast("list[list[str]]", result.get("documents"))[0]
             distances = cast("list[list[float]]", result.get("distances"))[0]
             metadatas = cast("list[list[dict]]", result.get("metadatas"))[0]
+            embeddings = cast("list[list[list[float]]]", result.get("embeddings"))[0]
         except IndexError:
             msg = "Something went wrong"
             raise ValueError(msg) from None
@@ -92,9 +98,18 @@ class VectorStore:
                 text=documents[i],
                 score=1 - distances[i],
                 metadata=metadatas[i],
+                embedding=embeddings[i],
             )
             for i in range(len(ids))
         ]
+
+    def search(self, query: str, *, top_k: int = 3, where: Where | None = None) -> list[ResultSearch]:
+        return self._search(self.encode_query(query), top_k=top_k, where=where)
+
+    def search_by_embedding(
+        self, embedding: list[float], *, top_k: int = 3, where: Where | None = None
+    ) -> list[ResultSearch]:
+        return self._search(embedding, top_k=top_k, where=where)
 
 
 if __name__ == "__main__":

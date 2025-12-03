@@ -13,6 +13,16 @@ class MailDTO(BaseModel):
     section_id: int
 
 
+class ConceptDTO(BaseModel):
+    id: str
+    label: str
+
+
+class ConceptSearchResultDTO(BaseModel):
+    concept: ConceptDTO
+    mails: list[MailDTO]
+
+
 class SearchDTO(BaseModel):
     query: str
     tags: list[str]

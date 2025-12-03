@@ -20,6 +20,7 @@ class SearchResult:
     id: str
     label: str
     score: float
+    embedding: list[float]
 
 
 class ConceptVectorStore:
@@ -40,6 +41,8 @@ class ConceptVectorStore:
 
     def _seed_vector(self, engine: Engine) -> None:
         concepts = read(engine, Concept, [("is_registered_store", "==", False)])
+        if not concepts:
+            return
         self.vs.seed_documents(
             [AddStoreDocument(doc_id=concept.id, text=concept.label, metadata={"type": "seed"}) for concept in concepts]
         )
@@ -48,7 +51,17 @@ class ConceptVectorStore:
 
     def search(self, query: str, *, top_k: int = len(CONCEPT_SEED_DATA)) -> list[SearchResult]:
         results = self.vs.search(query, top_k=top_k)
-        return [SearchResult(id=result.doc_id, label=result.text, score=result.score) for result in results]
+        return [
+            SearchResult(id=result.doc_id, label=result.text, score=result.score, embedding=result.embedding)
+            for result in results
+        ]
+
+    def search_by_embedding(self, query: list[float], *, top_k: int = len(CONCEPT_SEED_DATA)) -> list[SearchResult]:
+        results = self.vs.search_by_embedding(query, top_k=top_k)
+        return [
+            SearchResult(id=result.doc_id, label=result.text, score=result.score, embedding=result.embedding)
+            for result in results
+        ]
 
 
 if __name__ == "__main__":

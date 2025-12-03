@@ -10,7 +10,7 @@ from starlette.middleware.cors import CORSMiddleware
 from app.app_resource import app_resource
 from app.routers import ai_router, tags_router, vector_store_router
 from app.services.database.engine import get_engine
-from app.services.vector_store.concept import ConceptVectorStore
+from app.services.vector_store import ConceptVectorStore
 from app.utils.logging import get_logger
 
 if TYPE_CHECKING:
@@ -25,7 +25,7 @@ async def lifespan(_: FastAPI) -> AsyncGenerator:
     try:
         SQLModel.metadata.create_all(engine)
         app_resource.embedding_model.load_model()
-        ConceptVectorStore().seed()
+        ConceptVectorStore().seed(engine)
         yield
     except Exception:
         logger.exception("Error during lifespan")

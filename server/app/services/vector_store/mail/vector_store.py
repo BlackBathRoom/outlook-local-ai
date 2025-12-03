@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class SearchResultMail:
     part: str
     mail_id: str
-    section_id: str
+    section_id: int
     score: float
 
 
@@ -37,13 +37,31 @@ class MailVectorStore:
         else:
             self.vs.add_document(self._transform_add(mail))
 
-    def _build_tag_condition(self, tags: list[Tag]) -> Where:
+    def _build_tag_condition(self, tags: list[Tag] | None) -> Where | None:
+        if tags is None or not tags:
+            return None
+        if len(tags) == 1:
+            return {tags[0].name: tags[0].id}
         return {"$and": [{tag.name: tag.id} for tag in tags]}
 
     def search(self, query: str, top_k: int = 5, filter_tags: list[Tag] | None = None) -> list[SearchResultMail]:
+        result = self.vs.search(query, top_k=top_k, where=self._build_tag_condition(filter_tags))
+        return [
+            SearchResultMail(
+                part=r.text,
+                mail_id=r.metadata["mail_id"],
+                section_id=r.metadata["section_id"],
+                score=r.score,
+            )
+            for r in result
+        ]
+
+    def search_by_embedding(
+        self, query: list[float], top_k: int = 5, filter_tags: list[Tag] | None = None
+    ) -> list[SearchResultMail]:
         if filter_tags is None:
             filter_tags = []
-        result = self.vs.search(query, top_k=top_k, where=self._build_tag_condition(filter_tags))
+        result = self.vs.search_by_embedding(query, top_k=top_k, where=self._build_tag_condition(filter_tags))
         return [
             SearchResultMail(
                 part=r.text,
