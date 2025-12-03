@@ -29,7 +29,9 @@ class ResultSearch:
 class VectorStore:
     def __init__(self, collection: str) -> None:
         self.client = app_resource.chroma_client
-        self.collection = self.client.get_or_create_collection(name=collection, metadata={"hnsw:space": "cosine"})
+        self.collection = self.client.get_or_create_collection(
+            name=collection, configuration={"hnsw": {"space": "cosine"}}
+        )
         app_resource.embedding_model.load_model()
 
     def _trans_to_document_form(self, text: str) -> str:
@@ -58,7 +60,12 @@ class VectorStore:
     def search(self, query: str, *, top_k: int = 3, where: Where | None = None) -> list[ResultSearch]:
         with app_resource.embedding_model.use_model() as model:
             query_embedding = model.embed_query(self._trans_to_query_form(query))
-        result = self.collection.query(query_embeddings=query_embedding, n_results=top_k, where=where)
+        result = self.collection.query(
+            query_embeddings=query_embedding,
+            n_results=top_k,
+            where=where,
+            include=["documents", "metadatas", "distances"],
+        )
         ids = result.get("ids")[0]
 
         try:
@@ -72,7 +79,7 @@ class VectorStore:
         return [
             ResultSearch(
                 doc_id=ids[i],
-                text=documents[i].removeprefix(DOCUMENT_PREFIX),
+                text=documents[i],
                 distance=distances[i],
                 metadata=metadatas[i],
             )
