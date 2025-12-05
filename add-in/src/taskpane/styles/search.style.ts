@@ -71,6 +71,35 @@ const useSearchStyles = makeStyles({
     overflow: "hidden",
     textOverflow: "ellipsis",
   },
+  modalContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "0.5rem",
+    width: "100%",
+  },
+  mailPart: {
+    fontSize: "1em",
+    color: "#333",
+  },
+  openMailButton: {
+    padding: "0.5rem 0",
+    borderRadius: "0.5rem",
+    background: "#0078d4",
+    minWidth: "100%",
+    color: "#fff",
+    border: "none",
+    cursor: "pointer",
+    fontSize: "0.9em",
+    "&:hover": {
+      background: "#005a9e",
+    },
+    "&:disabled": {
+      background: "#ccc",
+      color: "#999",
+      cursor: "not-allowed",
+    },
+  },
 });
 
 export default useSearchStyles;
