@@ -1,26 +1,30 @@
-interface RegistMail {
-  id: string;
-  mail: string;
-  tagIds: string[];
-}
+import z from "zod";
 
-type RegistMailDTO = {
-  tag_ids: string[];
-} & Omit<RegistMail, "tagIds">;
+const registMailSchema = z.object({
+  id: z.string(),
+  mail: z.string(),
+  tag_ids: z.array(z.string()),
+});
 
-interface MailDTO {
-  id: string;
-  mail_part: string;
-  section_id: number;
-}
+const mailSchema = z.object({
+  id: z.string(),
+  mail_part: z.string(),
+  section_id: z.number(),
+});
 
-interface Search {
-  query: string;
-  tagIds: string[];
-}
+const searchSchema = z.object({
+  query: z.string(),
+  tag_ids: z.array(z.string()),
+});
 
-type SearchDTO = {
-  tag_ids: string[];
-} & Omit<Search, "tagIds">;
+const conceptSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+});
 
-export type { RegistMail, RegistMailDTO, MailDTO, Search, SearchDTO };
+const conceptSearchResultSchema = z.object({
+  concept: conceptSchema,
+  mails: z.array(mailSchema),
+});
+
+export { registMailSchema, mailSchema, searchSchema, conceptSchema, conceptSearchResultSchema };

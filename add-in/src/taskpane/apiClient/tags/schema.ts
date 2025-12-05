@@ -1,9 +1,12 @@
-import { Tag } from "../../types";
+import z from "zod";
 
-interface PostTagDTO {
-  name: string;
-}
+const registTagSchema = z.object({
+  name: z.string(),
+});
 
-interface TagDTO extends Tag {}
+const tagSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
 
-export type { PostTagDTO, TagDTO };
+export { registTagSchema, tagSchema };

@@ -1,32 +1,27 @@
+import z from "zod";
 import { VectorMail } from "../../types";
 import { BaseAPIClient } from "../shared";
-import { MailDTO, RegistMail, RegistMailDTO, Search, SearchDTO } from "./schema";
+import { conceptSearchResultSchema, mailSchema, registMailSchema, searchSchema } from "./schema";
+
+type Search = Omit<z.infer<typeof searchSchema>, "tag_ids"> & {
+  tagIds: string[];
+};
 
 class SearchClient extends BaseAPIClient {
   constructor() {
     super("search");
   }
 
-  private searchDataGuard(res: unknown): res is MailDTO[] {
-    return (
-      Array.isArray(res) &&
-      res.every(
-        (item) =>
-          typeof item === "object" &&
-          item !== null &&
-          "id" in item &&
-          "mail_id" in item &&
-          "section_id" in item
-      )
-    );
-  }
-
   async post(data: Search): Promise<VectorMail[]> {
-    const data_: SearchDTO = {
-      query: data.query,
-      tag_ids: data.tagIds,
-    };
-    const res = await this.fetchAPI("POST", { guard: this.searchDataGuard, data: data_ });
+    const res = await this.fetchAPI("POST", {
+      requestBodySchema: searchSchema,
+      responseSchema: z.array(mailSchema),
+      data: {
+        query: data.query,
+        tag_ids: data.tagIds,
+      },
+    });
+
     return res.map((item) => ({
       id: item.id,
       part: item.mail_part,
@@ -35,20 +30,58 @@ class SearchClient extends BaseAPIClient {
   }
 }
 
+type ConceptSearchResult = Omit<z.infer<typeof conceptSearchResultSchema>, "mails"> & {
+  mails: VectorMail[];
+};
+
+class SearchWithConceptClient extends BaseAPIClient {
+  constructor() {
+    super("search-with-concept");
+  }
+
+  async post(data: Search): Promise<ConceptSearchResult[]> {
+    const res = await this.fetchAPI("POST", {
+      requestBodySchema: searchSchema,
+      responseSchema: z.array(conceptSearchResultSchema),
+      data: {
+        query: data.query,
+        tag_ids: data.tagIds,
+      },
+    });
+
+    return res.map((item) => ({
+      concept: item.concept,
+      mails: item.mails.map((mail) => ({
+        id: mail.id,
+        part: mail.mail_part,
+        sectionId: mail.section_id,
+      })),
+    }));
+  }
+}
+
+type RegistMail = Omit<z.infer<typeof registMailSchema>, "tag_ids"> & {
+  tagIds: string[];
+};
+
 export class VectorStoreClient extends BaseAPIClient {
   public search: SearchClient;
+  public searchWithConcept: SearchWithConceptClient;
 
   constructor() {
     super("vector-store");
     this.search = new SearchClient();
+    this.searchWithConcept = new SearchWithConceptClient();
   }
 
   public async post(data: RegistMail): Promise<void> {
-    const data_: RegistMailDTO = {
-      mail: data.mail,
-      id: data.id,
-      tag_ids: data.tagIds,
-    };
-    await this.fetchAPI("POST", { data: data_ });
+    await this.fetchAPI("POST", {
+      requestBodySchema: registMailSchema,
+      data: {
+        mail: data.mail,
+        id: data.id,
+        tag_ids: data.tagIds,
+      },
+    });
   }
 }
