@@ -37,7 +37,7 @@ def get_tags(engine: Engine, tag_ids: list[str]) -> list[Tag]:
 @router.post("")
 def add_mail_to_vector_store(body: PostMailDTO, engine: Annotated[Engine, Depends(get_engine)]) -> SuccessResponse:
     vs = MailVectorStore()
-    tags = get_tags(engine, body.tags)
+    tags = get_tags(engine, body.tag_ids)
     mails = VectorMail.from_pure_mail(body.mail, body.id, tags)
     vs.add(mails)
     return SuccessResponse(message="Mail added successfully")
@@ -46,7 +46,7 @@ def add_mail_to_vector_store(body: PostMailDTO, engine: Annotated[Engine, Depend
 @router.post("/search")
 def search(body: SearchDTO, engine: Annotated[Engine, Depends(get_engine)], top_k: int = 3) -> list[MailDTO]:
     vs = MailVectorStore()
-    tags = get_tags(engine, body.tags)
+    tags = get_tags(engine, body.tag_ids)
     result = vs.search(body.query, top_k, tags)
     return [
         MailDTO(id=r.mail_id, mail_part=r.part, section_id=r.section_id)
@@ -64,7 +64,7 @@ def search_with_concept(
 ) -> list[ConceptSearchResultDTO]:
     concept_vs = ConceptVectorStore()
     mail_vs = MailVectorStore()
-    tags = get_tags(engine, body.tags)
+    tags = get_tags(engine, body.tag_ids)
 
     with app_resource.embedding_model.use_model() as model:
         query_embedding = _normalize(model.embed_query(body.query))
