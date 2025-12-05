@@ -9,3 +9,8 @@ export interface VectorMail {
   part: string;
   sectionId: number;
 }
+
+export interface Concept {
+  id: string;
+  label: string;
+}

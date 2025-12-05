@@ -8,6 +8,15 @@ const useSearchStyles = makeStyles({
     gap: "1rem",
     padding: "0 0.5rem",
   },
+  searchContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "1rem",
+    backgroundColor: "#fff",
+    borderRadius: "0.7rem",
+    padding: "1rem 1.5rem",
+  },
   searchBox: {
     display: "flex",
     maxWidth: "100%", // 追加
@@ -15,9 +24,6 @@ const useSearchStyles = makeStyles({
     alignItems: "center",
     justifyItems: "center",
     gap: "0.5rem",
-    backgroundColor: "#fff",
-    borderRadius: "0.7rem",
-    padding: "1rem 1.5rem",
   },
   input: {
     flex: 1,
@@ -99,6 +105,26 @@ const useSearchStyles = makeStyles({
       color: "#999",
       cursor: "not-allowed",
     },
+  },
+  tagList: {
+    listStyle: "none",
+    paddingLeft: 0,
+    margin: 0,
+  },
+  tagItem: {
+    marginBottom: "6px",
+  },
+  tagLabelItem: {
+    display: "flex",
+    alignItems: "center",
+  },
+  tagCheckbox: {
+    marginRight: "8px",
+  },
+  loadingLabel: {
+    color: "#999",
+    fontSize: "0.9em",
+    fontWeight: "bold",
   },
 });
 

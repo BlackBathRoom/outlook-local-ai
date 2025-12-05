@@ -1,48 +1,130 @@
 import React, { useState } from "react";
 import useSearchStyles from "../styles/search.style";
 import { apiClient } from "../apiClient";
-import { VectorMail } from "../types";
+import type { Concept, VectorMail } from "../types";
 import { openMailItem } from "../taskpane";
 import Modal from "../components/Modal";
+import { useFetch } from "../hooks/useFetch";
+
+interface ConceptSearchResult {
+  concept: Concept;
+  mails: VectorMail[];
+}
 
 const SearchPage: React.FC = () => {
+  const {
+    data: tags,
+    isLoading: isTagsLoading,
+    refetch: refetchTags,
+  } = useFetch({ fetchFn: async () => await apiClient.tags.get() });
   const styles = useSearchStyles();
+
+  const [isConceptSearch, setIsConceptSearch] = useState<boolean>(false);
   const [query, setQuery] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [modalItem, setModalItem] = useState<VectorMail | null>(null);
-  const [results, setResults] = useState<VectorMail[]>([]);
+
+  const [normalSearchResults, setNormalSearchResults] = useState<VectorMail[]>([]);
+  const [conceptSearchResults, setConceptSearchResults] = useState<ConceptSearchResult[]>([]);
+
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+
+  const handleTagChange = (id: string) => {
+    setSelectedTagIds((prev) =>
+      prev.includes(id) ? prev.filter((tid) => tid !== id) : [...prev, id]
+    );
+  };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) {
-      setResults([]);
-      return;
-    }
+    setNormalSearchResults([]);
+    setConceptSearchResults([]);
 
-    const res = await apiClient.vectorStore.search.post({ query, tagIds: [] });
-    setResults(res);
+    if (!query.trim()) return;
+
+    setIsLoading(true);
+    if (isConceptSearch) {
+      const res = await apiClient.vectorStore.searchWithConcept.post({
+        query,
+        tagIds: selectedTagIds,
+      });
+      setConceptSearchResults(res);
+    } else {
+      const res = await apiClient.vectorStore.search.post({ query, tagIds: selectedTagIds });
+      setNormalSearchResults(res);
+    }
+    setIsLoading(false);
   };
 
   return (
     <>
       <div className={styles.container}>
-        <form className={styles.searchBox} onSubmit={handleSearch}>
-          <input
-            className={styles.input}
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="検索ワードを入力"
-          />
-          <button className={styles.searchButton} type="submit">
-            検索
+        <form className={styles.searchContainer} onSubmit={handleSearch}>
+          <div className={styles.searchBox}>
+            <input
+              className={styles.input}
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="検索ワードを入力"
+            />
+            <button className={styles.searchButton} type="submit" disabled={isLoading}>
+              検索
+            </button>
+          </div>
+          <button type="button" onClick={() => setIsConceptSearch((prev) => !prev)}>
+            概念検索
           </button>
+          {isTagsLoading ? (
+            <div>Loading...</div>
+          ) : (
+            <ul className={styles.tagList}>
+              {tags !== null &&
+                tags.map((tag) => (
+                  <li key={tag.id} className={styles.tagItem}>
+                    <label className={styles.tagLabelItem}>
+                      <input
+                        type="checkbox"
+                        checked={selectedTagIds.includes(tag.id)}
+                        onChange={() => handleTagChange(tag.id)}
+                        className={styles.tagCheckbox}
+                      />
+                      <span>{tag.name}</span>
+                    </label>
+                  </li>
+                ))}
+            </ul>
+          )}
         </form>
+        {isLoading && <span className={styles.loadingLabel}>検索中...</span>}
         <ul className={styles.resultList}>
-          {results.map((result, idx) => (
-            <li key={idx} className={styles.resultItem} onClick={() => setModalItem(result)}>
-              <span className={styles.resultItemText}>{result.part}</span>
-            </li>
-          ))}
+          {isConceptSearch
+            ? conceptSearchResults.map(({ concept, mails }) => (
+                <li key={concept.id}>
+                  <span>{concept.label}</span>
+                  <ul>
+                    {mails.map((mail) => (
+                      <li
+                        key={mail.id}
+                        className={styles.resultItem}
+                        onClick={() => setModalItem(mail)}
+                      >
+                        <span className={styles.resultItemText}>{mail.part}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))
+            : normalSearchResults.map((result) => (
+                <li
+                  key={result.id}
+                  className={styles.resultItem}
+                  onClick={() => setModalItem(result)}
+                >
+                  <span className={styles.resultItemText}>{result.part}</span>
+                </li>
+              ))}
         </ul>
       </div>
       {modalItem !== null && (
