@@ -20,8 +20,7 @@ from app.dtos.vector_store import (
     RegisteredCheckResultDTO,
     SearchDTO,
 )
-from app.models import Tag
-from app.models._models import RegisteredMailIds
+from app.models import Tag, RegisteredMailIds
 from app.services.database.engine import get_engine
 from app.services.database.operation import create, read
 from app.services.vector_store import ConceptVectorStore, MailVectorStore
