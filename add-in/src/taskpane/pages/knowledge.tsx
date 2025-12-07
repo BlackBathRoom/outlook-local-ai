@@ -124,7 +124,11 @@ const KnowledgePage: React.FC = () => {
               追加
             </button>
           </form>
-          <button onClick={handleGenerateTags} className={styles.generateButton}>
+          <button
+            onClick={handleGenerateTags}
+            className={styles.generateButton}
+            disabled={isMailBodyLoading || mailBody === null}
+          >
             メール本文からタグを生成
           </button>
           {/* 仕切り線を追加 */}
