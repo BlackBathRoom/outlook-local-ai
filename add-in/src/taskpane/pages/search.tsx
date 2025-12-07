@@ -124,8 +124,8 @@ const SearchPage: React.FC = () => {
           {isConceptSearch
             ? conceptSearchResults.map(({ concept, mails }) => (
                 <li key={concept.id}>
-                  <span>{concept.label}</span>
-                  <ul>
+                  <span>「{concept.label}」に意味的に近いためヒットしました。</span>
+                  <ul className={styles.resultList}>
                     {mails.map((mail) => (
                       <li
                         key={mail.id}
