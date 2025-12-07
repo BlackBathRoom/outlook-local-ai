@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
     from sqlalchemy import Engine
     from sqlmodel import SQLModel
+    from sqlmodel.sql.expression import SelectOfScalar
 
 logger = get_logger(__name__)
 
@@ -64,32 +65,52 @@ CONDITION_MAP: dict[Operator, Callable[[Any, Any], bool]] = {
 }
 
 
+def _resolve_condition[M: SQLModel](
+    model: type[M], statement: SelectOfScalar[M], where: list[Condition]
+) -> SelectOfScalar[M]:
+    stmt = statement
+    for field_name, operator, value in where:
+        field = getattr(model, field_name)
+        if field is None:
+            msg = f"Field '{field_name}' does not exist on model '{model.__name__}'"
+            logger.error(msg)
+
+        condition = CONDITION_MAP[operator](field, value)
+        stmt = stmt.where(condition)
+
+    return stmt
+
+
 @db_error_handler
 def read[T: SQLModel](engine: Engine, model: type[T], where: list[Condition] | None = None) -> Sequence[T]:
     logger.debug("Reading %s", model)
     with Session(engine) as session:
         statement = select(model)
-
         if where is not None:
-            for field_name, operator, value in where:
-                field = getattr(model, field_name)
-                if field is None:
-                    msg = f"Field '{field_name}' does not exist on model '{model.__name__}'"
-                    logger.error(msg)
-
-                condition = CONDITION_MAP[operator](field, value)
-                statement = statement.where(condition)
+            statement = _resolve_condition(model, statement, where)
 
         return session.exec(statement).all()
 
 
 @db_error_handler
-def update(engine: Engine, obj: SQLModel) -> None:
-    logger.debug("Updating %s", obj)
+def update(engine: Engine, model: type[SQLModel], values: dict[str, Any], where: list[Condition] | None = None) -> None:
+    logger.debug("Updating %s", model)
     with Session(engine) as session:
-        session.add(obj)
+        stmt = select(model)
+        if where is not None:
+            stmt = _resolve_condition(model, stmt, where)
+        target = session.exec(stmt).all()
+
+        for key, value in values.items():
+            if getattr(model, key) is None:
+                msg = f"Field '{key}' does not exist on model '{model.__name__}'"
+                logger.error(msg)
+                raise ValueError(msg)
+
+            for obj in target:
+                setattr(obj, key, value)
+                session.add(obj)
         session.commit()
-        session.refresh(obj)
 
 
 @db_error_handler

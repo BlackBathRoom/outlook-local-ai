@@ -1,28 +1,9 @@
 import React, { useState } from "react";
 import useKnowledgeStyles from "../styles/knowledge.style";
-import { fetchMailBody } from "../feature/getMailBody";
-import { getMailItemId } from "../feature/getMailItemId";
+import { getMailBody, getMailItemId } from "../taskpane";
 import { apiClient } from "../apiClient";
 import { useFetch } from "../hooks/useFetch";
-
-const Modal: React.FC<{ open: boolean; onClose: () => void; children: React.ReactNode }> = ({
-  open,
-  onClose,
-  children,
-}) => {
-  const styles = useKnowledgeStyles();
-  if (!open) return null;
-  return (
-    <div className={styles.modalOverlay}>
-      <div className={styles.modalContainer}>
-        <p className={styles.modalContent}>{children}</p>
-        <button className={styles.closeButton} onClick={onClose}>
-          閉じる
-        </button>
-      </div>
-    </div>
-  );
-};
+import Modal from "../components/Modal";
 
 const KnowledgePage: React.FC = () => {
   const {
@@ -30,7 +11,7 @@ const KnowledgePage: React.FC = () => {
     isLoading: isTagsLoading,
     refetch: refetchTags,
   } = useFetch({ fetchFn: async () => await apiClient.tags.get() });
-  const { data: mailBody, isLoading: isMailBodyLoading } = useFetch({ fetchFn: fetchMailBody });
+  const { data: mailBody, isLoading: isMailBodyLoading } = useFetch({ fetchFn: getMailBody });
 
   const [open, setOpen] = useState(false);
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
@@ -51,12 +32,12 @@ const KnowledgePage: React.FC = () => {
   };
 
   const handleUndecidedButton = async () => {
-    const mailItemId = await getMailItemId();
+    const mailItemId = getMailItemId();
     if (mailItemId && mailBody) {
       await apiClient.vectorStore.post({
         id: mailItemId,
         mail: mailBody, // メール本文
-        tags: selectedTagIds,
+        tagIds: selectedTagIds,
       });
     }
   };

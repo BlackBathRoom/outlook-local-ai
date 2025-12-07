@@ -1,3 +1,5 @@
+import z from "zod";
+
 export const API_BASE_URL = "http://localhost:8000/api";
 
 export class BaseAPIClient {
@@ -7,27 +9,30 @@ export class BaseAPIClient {
     this.url = `${API_BASE_URL}/${resource}`;
   }
 
-  protected async fetchAPI<TResponse = unknown>(
+  protected async fetchAPI<TRequestBody = unknown, TResponse = unknown>(
     method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
     options: {
-      guard?: (response: unknown) => response is TResponse;
-      data?: unknown;
+      requestBodySchema?: z.ZodType<TRequestBody>;
+      responseSchema?: z.ZodType<TResponse>;
+      data?: TRequestBody;
     } = {}
   ): Promise<TResponse> {
+    const requestBody =
+      options.requestBodySchema !== undefined
+        ? options.requestBodySchema.parse(options.data)
+        : options.data;
+
     return fetch(this.url, {
       method,
       headers: {
         "Content-Type": "application/json",
       },
-      body: options.data !== undefined ? JSON.stringify(options.data) : undefined,
+      body: requestBody !== undefined ? JSON.stringify(requestBody) : undefined,
     })
       .then((res) => res.json())
       .then((data) => {
-        if (options.guard !== undefined) {
-          if (options.guard(data)) {
-            return data;
-          }
-          throw new Error(`Unexpected response: ${JSON.stringify(data)}`);
+        if (options.responseSchema !== undefined) {
+          return options.responseSchema.parse(data);
         }
         return data;
       })

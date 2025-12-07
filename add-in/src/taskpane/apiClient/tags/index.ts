@@ -1,24 +1,20 @@
 import { BaseAPIClient } from "../shared";
 import type { Tag } from "../../types";
-import { PostTagDTO, TagDTO } from "./schema";
+import { registTagSchema, tagSchema } from "./schema";
+import z from "zod";
+
+type RegistTag = z.infer<typeof registTagSchema>;
 
 export class TagClient extends BaseAPIClient {
   constructor() {
     super("tags");
   }
 
-  private getTagsGuard = (res: unknown): res is TagDTO[] => {
-    return (
-      Array.isArray(res) &&
-      res.every((item) => typeof item === "object" && "id" in item && "name" in item)
-    );
-  };
-
-  async get(): Promise<Tag[]> {
-    return await this.fetchAPI("GET", { guard: this.getTagsGuard });
+  public async get(): Promise<Tag[]> {
+    return await this.fetchAPI("GET", { responseSchema: z.array(tagSchema) });
   }
 
-  async post(data: PostTagDTO): Promise<void> {
-    await this.fetchAPI("POST", { data });
+  public async post(data: RegistTag): Promise<void> {
+    await this.fetchAPI("POST", { requestBodySchema: registTagSchema, data });
   }
 }

@@ -13,7 +13,7 @@ MODEL_REPO_ID = "OpenVINO/Phi-4-mini-instruct-int8-ov"
 
 
 class ChatModel(Model[ChatOpenVINO]):
-    def load_model(self) -> ChatOpenVINO:
+    def _load_model(self) -> ChatOpenVINO:
         logger.info("Loading chat model...")
         path = _load_model(repo_id=MODEL_REPO_ID, download_path=AI_MODELS_PATH)
         llm = OpenVINOLLM.from_model_path(path)
