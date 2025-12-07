@@ -23,8 +23,14 @@ class Model[TModel](ABC):
                 cls._instance = super().__new__(cls)
         return cls._instance
 
-    @abstractmethod
     def load_model(self) -> TModel:
+        with self._lock:
+            if self.model is None:
+                self.model = self._load_model()
+            return self.model
+
+    @abstractmethod
+    def _load_model(self) -> TModel:
         raise NotImplementedError
 
     @contextmanager

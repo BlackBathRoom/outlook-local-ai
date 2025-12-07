@@ -33,7 +33,6 @@ class VectorStore:
         self.collection = self.client.get_or_create_collection(
             name=collection, configuration={"hnsw": {"space": "cosine"}}
         )
-        app_resource.embedding_model.load_model()
 
     def _trans_to_document_form(self, text: str) -> str:
         return DOCUMENT_PREFIX + text

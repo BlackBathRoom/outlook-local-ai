@@ -20,7 +20,7 @@ MODEL_REPO_ID = "cl-nagoya/ruri-v3-70m"
 
 
 class EmbeddingModel(Model[HuggingFaceEmbeddings]):
-    def load_model(self) -> HuggingFaceEmbeddings:
+    def _load_model(self) -> HuggingFaceEmbeddings:
         logger.info("Loading embedding model")
         path = _load_model(repo_id=MODEL_REPO_ID, download_path=AI_MODELS_PATH)
         self._convert_model(path)
